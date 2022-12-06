@@ -8,3 +8,4 @@ Projet en node pour notre projet
 ```bash
 npm install
 npm start
+```
