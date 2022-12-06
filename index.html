@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sockets</title>
+</head>
+<body>
+    <h1>Click on button to increment the value</h1>
+    <p id="number">0</p>
+    <button onclick="increment()">+1</button>
+</body>
+<script>
+    // Create WebSocket connection.
+    const socket = new WebSocket('ws://node.balsamite.ovh1.ec-m.fr');
+    let number = 0;
+
+    //function to update number with real value
+
+    async function get1stNb(){
+        res = await fetch('/number')
+        value = await res.json()
+        return value
+    }
+    (async () => {
+        number = await fetch("/number").then(res=>res.json())
+        document.getElementById("number").innerHTML=number;
+    })()
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to WS Server')
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server ', event.data);
+        number = parseInt(event.data)
+        document.getElementById("number").innerHTML=number;
+        
+    });
+
+    const increment = () => {
+        socket.send((number+1).toString());
+        // document.getElementById("number").innerHTML=number+1;
+        // number = number+=1
+    }
+</script>
+</html>
