@@ -35,9 +35,13 @@ class PhoneClient{
         this.y = Math.max(0, Math.min(gridHeight-1, this.y + data.y))
         return {req:"move",x:this.x,y:this.y,color:this.color,id:this.id}
     }
+
+    changeColor(data){
+        return {req:"chgColor", x:this.x, y:this.y, color:data.color}
+    }
 }
 
-class Connexion{
+export default class Connexion{
     constructor(colors){
         this.screen;
         this.nbPhones = len(colors);
@@ -45,6 +49,10 @@ class Connexion{
         for(let i=0;i<this.nbPhones;i++){
             this.phones[i] = new PhoneClient(colors[i],i)
         }
+    }
+
+    newScreen(screen){
+        this.screen=screen
     }
 
     getFreePhone(){
@@ -77,5 +85,25 @@ class Connexion{
             }
         }
         return index
+    }
+
+    moveClient(client, data){
+        idClient = this.searchIndexFromClient(client)
+        if(id!=-1){
+            return this.phones[idClient].moveCursor(data)
+        }
+        else{
+            return null
+        }
+    }
+
+    changeColorClient(client, data){
+        idClient = this.searchIndexFromClient(client)
+        if(id!=-1){
+            return this.phones[idClient].changeColor(data)
+        }
+        else{
+            return null
+        }
     }
 }
