@@ -23,13 +23,16 @@ wss.on('connection', function connection(ws) {
             // console.log("Screen connected")
             if(data.type=="screen"){
                 connexion.newScreen(ws)
+                //console.log("Connected to screen")
             }else{
                 res = connexion.newPhoneClient(ws)
                 if(res.id==-1){
                     ws.send(JSON.stringify(res))
+                    console.log("Id==-1")
                 }else if(connexion.screen){
                     ws.send(JSON.stringify(res))
                     connexion.screen.send(JSON.stringify(res))
+                    //console.log("Phone to screen")
                 }else{
                     ws.send(JSON.stringify(res))
                 }
@@ -40,7 +43,9 @@ wss.on('connection', function connection(ws) {
             if(res){
                 ws.send(JSON.stringify(res))
                 if(connexion.screen){
-                    connexion.screen.send(JSON.stringify(res))
+                    connexion.screen.send(JSON.stringify(res));
+                    console.log("Message Sent to screen");
+
                 }
             }
         }

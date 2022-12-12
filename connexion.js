@@ -68,7 +68,7 @@ class Connexion{
     newPhoneClient(client){
         if(this.searchIndexFromClient(client)==-1){
             let freeSpace = this.getFreePhone()
-            if(len(freeSpace)>0){
+            if(freeSpace.length>0){
                 return this.phones[freeSpace[0]].changeClient(client)
             }
             return {req:"move",x:0,y:0,color:"#ffffff",id:-1}
@@ -78,7 +78,7 @@ class Connexion{
     }
 
     searchIndexFromClient(client){
-        index=-1
+        let index=-1
         for(let i=0; i<this.nbPhones;i++){
             if(this.phones[i].client==client){
                 index=i
@@ -88,8 +88,8 @@ class Connexion{
     }
 
     moveClient(client, data){
-        idClient = this.searchIndexFromClient(client)
-        if(id!=-1){
+        const idClient = this.searchIndexFromClient(client)
+        if(idClient!=-1){
             return this.phones[idClient].moveCursor(data)
         }
         else{
@@ -98,8 +98,8 @@ class Connexion{
     }
 
     changeColorClient(client, data){
-        idClient = this.searchIndexFromClient(client)
-        if(id!=-1){
+        const idClient = this.searchIndexFromClient(client)
+        if(idClient!=-1){
             return this.phones[idClient].changeColor(data)
         }
         else{
