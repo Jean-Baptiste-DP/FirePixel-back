@@ -1,5 +1,3 @@
-// https://stackoverflow.com/questions/11181577/websocket-send-parameter
-
 const express = require('express')
 const app = express()
 const server = require('http').createServer(app);
@@ -10,23 +8,24 @@ require('dotenv').config()
 const wss = new WebSocket.Server({ server: server });
 
 var number = 0
+var screen;
 
 wss.on('connection', function connection(ws) {
 
-    ws.on('message', function incoming(new_number) {
-        console.log('new value: %s', new_number);
+    ws.on('message', function incoming(string) {
 
-        number = parseInt(new_number)
+        let data = JSON.parse(string)
+        console.log(data)
 
-        wss.clients.forEach(function each(client) {
-            // if (client !== ws && client.readyState === WebSocket.OPEN) {
-            //     client.send(new_number);
-            // }
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(number.toString());
+        if(data.type && data.type=="screen"){
+            screen = ws;
+            console.log("Screen connected")
+        }
+        else if(data.x){
+            if(screen){
+                screen.send(JSON.stringify(data))
             }
-        });
-
+        }
     });
 });
 
