@@ -3,7 +3,7 @@ const app = express()
 const server = require('http').createServer(app);
 const WebSocket = require('ws');
 const fs = require('fs');
-import Connexion from './connexion'
+var Connexion = require('./connexion');
 require('dotenv').config()
 
 const wss = new WebSocket.Server({ server: server });

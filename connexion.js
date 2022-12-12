@@ -41,10 +41,10 @@ class PhoneClient{
     }
 }
 
-export default class Connexion{
+class Connexion{
     constructor(colors){
         this.screen;
-        this.nbPhones = len(colors);
+        this.nbPhones = colors.length;
         this.phones = new Array(this.nbPhones);
         for(let i=0;i<this.nbPhones;i++){
             this.phones[i] = new PhoneClient(colors[i],i)
@@ -107,3 +107,5 @@ export default class Connexion{
         }
     }
 }
+
+module.exports = Connexion
