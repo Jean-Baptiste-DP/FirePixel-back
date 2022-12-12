@@ -21,19 +21,19 @@ class PhoneClient{
 
     changeClient(client){
         if(this.isConnected()){
-            return false
+            return {req:"move",x:0,y:0,color:"#ffffff",id:-1}
         }else{
             this.client = client
             this.x = (gridWidth-(gridWidth%2))/2
             this.y = (gridHeight-(gridHeight%2))/2
-            return true
+            return {req:"move",x:this.x,y:this.y,color:this.color,id:this.id}
         }
     }
 
     moveCursor(data){
         this.x = Math.max(0, Math.min(gridWidth-1, this.x + data.x))
         this.y = Math.max(0, Math.min(gridHeight-1, this.y + data.y))
-        return {req:"move",x:this.x,y:this.y,id:this.id}
+        return {req:"move",x:this.x,y:this.y,color:this.color,id:this.id}
     }
 }
 
@@ -57,7 +57,25 @@ class Connexion{
         return freePhone
     }
 
-    newPhoneClient(client,index){
-        return this.phones[index].changeClient(client)
+    newPhoneClient(client){
+        if(this.searchIndexFromClient(client)==-1){
+            let freeSpace = this.getFreePhone()
+            if(len(freeSpace)>0){
+                return this.phones[freeSpace[0]].changeClient(client)
+            }
+            return {req:"move",x:0,y:0,color:"#ffffff",id:-1}
+        }else{
+            return this.phones[this.searchIndexFromClient(client)].moveCursor({x:0,y:0})
+        }
+    }
+
+    searchIndexFromClient(client){
+        index=-1
+        for(let i=0; i<this.nbPhones;i++){
+            if(this.phones[i].client==client){
+                index=i
+            }
+        }
+        return index
     }
 }
