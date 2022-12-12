@@ -38,7 +38,7 @@ wss.on('connection', function connection(ws) {
                 }
             }
         }
-        else if(data.req && data.req=="move" && data.x && data.y){
+        else if(data.req && data.req=="move" && data.x!=undefined && data.y!=undefined){
             res = connexion.moveClient(ws,data)
             if(res){
                 ws.send(JSON.stringify(res))
@@ -49,7 +49,7 @@ wss.on('connection', function connection(ws) {
                 }
             }
         }
-        else if(data.req && data.req=="chgColor" && data.color){
+        else if(data.req && data.req=="chgColor" && data.color!=undefined){
             res = connexion.changeColorClient(ws,data)
             if(res){
                 for(let i=0;i<connexion.nbPhones;i++){
