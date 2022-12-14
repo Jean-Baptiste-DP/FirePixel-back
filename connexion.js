@@ -4,9 +4,8 @@ const gridHeight = 100;
 const gridWidth = 100;
 
 class PhoneClient{
-    constructor(color,id){
+    constructor(id){
         this.client;
-        this.color = color;
         this.x = (gridWidth-(gridWidth%2))/2
         this.y = (gridHeight-(gridHeight%2))/2
         this.id=id
@@ -21,19 +20,19 @@ class PhoneClient{
 
     changeClient(client){
         if(this.isConnected()){
-            return {req:"move",x:0,y:0,color:"#ffffff",id:-1}
+            return {req:"move",x:0,y:0,id:-1}
         }else{
             this.client = client
             this.x = (gridWidth-(gridWidth%2))/2
             this.y = (gridHeight-(gridHeight%2))/2
-            return {req:"move",x:this.x,y:this.y,color:this.color,id:this.id}
+            return {req:"move",x:this.x,y:this.y,id:this.id}
         }
     }
 
     moveCursor(data){
         this.x = Math.max(0, Math.min(gridWidth-1, this.x + data.x))
         this.y = Math.max(0, Math.min(gridHeight-1, this.y + data.y))
-        return {req:"move",x:this.x,y:this.y,color:this.color,id:this.id}
+        return {req:"move",x:this.x,y:this.y,id:this.id}
     }
 
     changeColor(data){
@@ -42,12 +41,12 @@ class PhoneClient{
 }
 
 class Connexion{
-    constructor(colors){
+    constructor(number){
         this.screen;
-        this.nbPhones = colors.length;
+        this.nbPhones = number;
         this.phones = new Array(this.nbPhones);
         for(let i=0;i<this.nbPhones;i++){
-            this.phones[i] = new PhoneClient(colors[i],i)
+            this.phones[i] = new PhoneClient(i)
         }
     }
 
@@ -71,7 +70,7 @@ class Connexion{
             if(freeSpace.length>0){
                 return this.phones[freeSpace[0]].changeClient(client)
             }
-            return {req:"move",x:0,y:0,color:"#ffffff",id:-1}
+            return {req:"move",x:0,y:0,id:-1}
         }else{
             return this.phones[this.searchIndexFromClient(client)].moveCursor({x:0,y:0})
         }
