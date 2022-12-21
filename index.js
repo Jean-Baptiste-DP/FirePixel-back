@@ -52,11 +52,11 @@ wss.on('connection', function connection(ws) {
         else if(data.req && data.req=="chgColor" && data.color!=undefined){
             res = connexion.changeColorClient(ws,data)
             if(res){
-                for(let i=0;i<connexion.nbPhones;i++){
-                    if(connexion.phones[i].client.readyState === WebSocket.OPEN){
+                /*for(let i=0;i<connexion.nbPhones;i++){
+                    //if(connexion.phones[i].client.readyState === WebSocket.OPEN){
                         connexion.phones[i].client.send(JSON.stringify(res))
-                    }
-                }
+                    //}
+                }*/
                 if(connexion.screen){
                     connexion.screen.send(JSON.stringify(res))
                 }
