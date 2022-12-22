@@ -25,18 +25,31 @@ class PhoneClient{
             this.client = client
             this.x = (gridWidth-(gridWidth%2))/2
             this.y = (gridHeight-(gridHeight%2))/2
-            return {req:"move",x:this.x,y:this.y,id:this.id}
+            return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
         }
     }
 
     moveCursor(data){
+        const oldX = this.x
+        const oldY = this.y
         this.x = Math.max(0, Math.min(gridWidth-1, this.x + data.x))
         this.y = Math.max(0, Math.min(gridHeight-1, this.y + data.y))
-        return {req:"move",x:this.x,y:this.y,id:this.id}
+
+        if(Math.round(oldX)!=Math.round(this.x) || Math.round(oldY)!=Math.round(this.y)){
+            return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
+        }else{
+            return null
+        }
+    }
+
+    moveCursorNull(){
+
+        return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
+
     }
 
     changeColor(data){
-        return {req:"chgColor", x:this.x, y:this.y, color:data.color}
+        return {req:"chgColor", x:Math.round(this.x), y:Math.round(this.y), color:data.color}
     }
 }
 
@@ -72,7 +85,7 @@ class Connexion{
             }
             return {req:"move",x:0,y:0,id:-1}
         }else{
-            return this.phones[this.searchIndexFromClient(client)].moveCursor({x:0,y:0})
+            return this.phones[this.searchIndexFromClient(client)].moveCursorNull()
         }
     }
 
