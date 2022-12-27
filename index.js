@@ -1,10 +1,15 @@
 const express = require('express')
+require('dotenv').config()
+
 const app = express()
+const db = require('./db')
+
+
 const server = require('http').createServer(app);
+
 const WebSocket = require('ws');
 const fs = require('fs');
 var Connexion = require('./connexion');
-require('dotenv').config()
 
 const wss = new WebSocket.Server({ server: server });
 
@@ -82,4 +87,4 @@ app.get('/number', (req,res)=>{
 })
 
 
-server.listen(process.env.PORT, () => console.log(`Lisening on port :`+process.env.PORT))
+server.listen(process.env.PORT, () => console.log(`Listening on port : `+process.env.PORT))
