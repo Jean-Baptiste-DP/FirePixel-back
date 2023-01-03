@@ -44,7 +44,6 @@ wss.on('connection', function connection(ws) {
                 ws.send(JSON.stringify(res))
                 if(connexion.screen){
                     connexion.screen.send(JSON.stringify(res));
-                    console.log("Message Sent to screen");
 
                 }
             }

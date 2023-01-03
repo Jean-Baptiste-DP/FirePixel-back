@@ -23,8 +23,6 @@ class PhoneClient{
             return {req:"move",x:0,y:0,id:-1}
         }else{
             this.client = client
-            this.x = (gridWidth-(gridWidth%2))/2
-            this.y = (gridHeight-(gridHeight%2))/2
             return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
         }
     }
