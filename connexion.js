@@ -79,7 +79,7 @@ class Connexion{
         if(this.searchIndexFromClient(client)==-1){
             let freeSpace = this.getFreePhone()
             if(freeSpace.length>0){
-                return this.phones[freeSpace[0]].changeClient(client)
+                return this.phones[freeSpace[Math.floor(Math.random()*freeSpace.length)]].changeClient(client)
             }
             return {req:"move",x:0,y:0,id:-1}
         }else{
