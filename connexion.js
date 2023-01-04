@@ -23,21 +23,16 @@ class PhoneClient{
             return {req:"move",x:0,y:0,id:-1}
         }else{
             this.client = client
-            return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
+            return {req:"move",x:this.x,y:this.y,id:this.id}
         }
     }
 
     moveCursor(data){
-        const oldX = this.x
-        const oldY = this.y
         this.x = Math.max(0, Math.min(gridWidth-1, this.x + data.x))
         this.y = Math.max(0, Math.min(gridHeight-1, this.y + data.y))
 
-        if(Math.round(oldX)!=Math.round(this.x) || Math.round(oldY)!=Math.round(this.y)){
-            return {req:"move",x:Math.round(this.x),y:Math.round(this.y),id:this.id}
-        }else{
-            return null
-        }
+        return {req:"move",x:this.x,y:this.y,id:this.id}
+        
     }
 
     moveCursorNull(){
@@ -47,7 +42,7 @@ class PhoneClient{
     }
 
     changeColor(data){
-        return {req:"chgColor", x:Math.round(this.x), y:Math.round(this.y), color:data.color}
+        return {req:"chgColor", x:this.x, y:this.y, color:data.color}
     }
 }
 
