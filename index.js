@@ -9,7 +9,6 @@ require('dotenv').config()
 const wss = new WebSocket.Server({ server: server });
 
 var number = 0
-var screen;
 const connexion = new Connexion(16)
 
 wss.on('connection', function connection(ws) {
