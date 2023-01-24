@@ -57,9 +57,10 @@ class Connexion{
     }
 
     newScreen(screen){
-        if(!this.screen || !this.screen.readyState === WebSocket.OPEN){
-            this.screen=screen
-        }
+        // if(!this.screen || !this.screen.readyState === WebSocket.OPEN){
+        //     this.screen=screen
+        // }
+        this.screen=screen
     }
 
     getFreePhone(){
