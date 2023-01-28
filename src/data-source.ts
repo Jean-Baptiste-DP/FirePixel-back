@@ -1,6 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { NewPixel } from "./entity/NewPixel"
+require('dotenv').config()
+
+console.log(process.env.POSTGRES_USER)
 
 export const AppDataSource = new DataSource({
     type: "postgres",
