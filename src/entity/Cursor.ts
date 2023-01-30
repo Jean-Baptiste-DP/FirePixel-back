@@ -11,12 +11,18 @@ export class Cursor {
     @CreateDateColumn()
     firstConnection: Date
 
-    //if it's possible to store the ip address of the phone, or ++ the MAC address, it would be easier for moderation
     @Column()
-    ip: string
+    positionX: number
+
+    @Column()
+    positionY: number
 
     @Column()
     idCursor: number
+
+    //if it's possible to store the ip address of the phone, or ++ the MAC address, it would be easier for moderation
+    @Column()
+    ip: string
 
     @ManyToOne(() => Screen, (screen) => screen.cursors)
     screen: Screen;

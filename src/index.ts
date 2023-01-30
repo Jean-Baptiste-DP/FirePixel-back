@@ -1,5 +1,6 @@
 import { AppDataSource } from "./data-source"
 import { NewPixel } from "./entity/NewPixel"
+import { ScreenService } from "./service/screen-service"
 
 AppDataSource.initialize().then(async () => {
 
@@ -11,10 +12,14 @@ AppDataSource.initialize().then(async () => {
     // await AppDataSource.manager.save(user)
     // console.log("Saved a new user with id: " + user.id)
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(NewPixel)
-    console.log("Loaded users: ", users)
+    const screenService = new ScreenService(AppDataSource.manager);
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
+    screenService.create({height:10,width:15})
+
+    // console.log("Loading users from the database...")
+    // const users = await AppDataSource.manager.find(NewPixel)
+    // console.log("Loaded users: ", users)
+
+    // console.log("Here you can setup and run express / fastify / any other framework.")
 
 }).catch(error => console.log(error))
