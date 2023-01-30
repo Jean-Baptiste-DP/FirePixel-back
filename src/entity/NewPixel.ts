@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from "typeorm"
+import { Cursor } from "./Cursor"
+import { Screen } from "./Screen"
 
 @Entity()
 export class NewPixel {
@@ -18,4 +20,13 @@ export class NewPixel {
     @Column()
     color: number
 
+    @Column()
+    previousColor: number
+
+
+    @ManyToOne(() => Screen, (screen) => screen.pixels)
+    grid: Screen;
+
+    @ManyToOne(() => Cursor, (cursor) => cursor.pixels)
+    cursor: Cursor;
 }

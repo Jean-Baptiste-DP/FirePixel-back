@@ -1,6 +1,8 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
+import { Cursor } from "./entity/Cursor"
 import { NewPixel } from "./entity/NewPixel"
+import { Screen } from "./entity/Screen"
 require('dotenv').config()
 
 console.log(process.env.POSTGRES_USER)
@@ -14,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: process.env.POSTGRES_DB,
     synchronize: true,
     logging: false,
-    entities: [NewPixel],
+    entities: [NewPixel, Cursor, Screen],
     migrations: [],
     subscribers: [],
 })
