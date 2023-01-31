@@ -9,7 +9,12 @@ export class ScreenService{
 
     async create(screen: ScreenDTO): Promise<number> {
         // * à changer si plusieurs écrans
-        const previouScreen = await this.repository.findOne({})
+        const previouScreen = await this.repository.find({
+            order:{
+                id:"DESC"
+            },
+            take:1
+        })[0]
 
         if(!previouScreen){
             const screenEntity: Screen = new Screen();

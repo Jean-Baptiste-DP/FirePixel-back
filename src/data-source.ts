@@ -5,8 +5,6 @@ import { NewPixel } from "./entity/NewPixel"
 import { Screen } from "./entity/Screen"
 require('dotenv').config()
 
-console.log(process.env.POSTGRES_USER)
-
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: "localhost",

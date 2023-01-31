@@ -4,3 +4,8 @@ export class CreateCursorDTO {
     public idCursor: number;
     public changed: boolean
 }
+
+export class ModifCursorDTO {
+    public idCursor: number;
+    public idScreen: number
+}
