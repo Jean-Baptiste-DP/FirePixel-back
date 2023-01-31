@@ -1,16 +1,18 @@
-import { EntityManager } from "typeorm";
+import { Repository } from "typeorm";
 import { ScreenDTO } from "../dto/screenDto";
 import { Screen } from "../entity/Screen";
 
 export class ScreenService{
     constructor(
-        private repository: EntityManager
+        private repository: Repository<Screen>
     ){}
 
-    async create(screen: ScreenDTO): Promise<any> {
+    async create(screen: ScreenDTO): Promise<number> {
+        // TODO checker si il y a pas déjà un écran
         const screenEntity: Screen = new Screen();
         screenEntity.height = screen.height;
         screenEntity.width = screen.width;
+        screenEntity.ip = screen.ip;
     
         screenEntity.grid = new Array(screen.height)
         for(let i=0; i<screen.height; i++){

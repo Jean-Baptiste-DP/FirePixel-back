@@ -9,3 +9,7 @@ Projet en node pour notre projet
 npm install
 npm start
 ```
+
+## Documentation 
+
+[TypeORM](https://typeorm.io/)
