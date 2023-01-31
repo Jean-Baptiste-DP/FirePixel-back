@@ -1,20 +1,27 @@
 import { AppDataSource } from "./data-source"
+import { Cursor } from "./entity/Cursor"
 import { NewPixel } from "./entity/NewPixel"
+import { Screen } from "./entity/Screen"
+import { CursorService } from "./service/cursor-service"
 import { ScreenService } from "./service/screen-service"
+import { Connection } from "./Websocket/connection"
 
 AppDataSource.initialize().then(async () => {
 
-    // console.log("Inserting a new user into the database...")
-    // const user = new NewPixel()
-    // user.positionX = 1
-    // user.positionY = 2
-    // user.color = 3
-    // await AppDataSource.manager.save(user)
-    // console.log("Saved a new user with id: " + user.id)
+    // Websocket storage
 
-    const screenService = new ScreenService(AppDataSource.manager);
+    const WsConnection = new Connection(16)
 
-    screenService.create({height:10,width:15})
+    // Repositories
+    const ScreenRepository = AppDataSource.getRepository(Screen)
+    const CursorRepository = AppDataSource.getRepository(Cursor)
+    const PixelRepository = AppDataSource.getRepository(NewPixel)
+
+    // Services
+    const screenService = new ScreenService(ScreenRepository);
+    const cursorService = new CursorService(CursorRepository, ScreenRepository)
+
+    screenService.create({height:10,width:15, ip:"127.0.0.1"})
 
     // console.log("Loading users from the database...")
     // const users = await AppDataSource.manager.find(NewPixel)
