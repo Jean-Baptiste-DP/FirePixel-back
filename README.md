@@ -13,3 +13,4 @@ npm start
 ## Documentation 
 
 [TypeORM](https://typeorm.io/)
+[RequestOptions](https://orkhan.gitbook.io/typeorm/docs/find-options)

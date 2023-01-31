@@ -8,18 +8,23 @@ export class ScreenService{
     ){}
 
     async create(screen: ScreenDTO): Promise<number> {
-        // TODO checker si il y a pas déjà un écran
-        const screenEntity: Screen = new Screen();
-        screenEntity.height = screen.height;
-        screenEntity.width = screen.width;
-        screenEntity.ip = screen.ip;
-    
-        screenEntity.grid = new Array(screen.height)
-        for(let i=0; i<screen.height; i++){
-            screenEntity.grid[i] = new Array(screen.width + 1).join( 'f' ); // 'f' = 15 the white color
+        // * à changer si plusieurs écrans
+        const previouScreen = await this.repository.findOne({})
+
+        if(!previouScreen){
+            const screenEntity: Screen = new Screen();
+            screenEntity.height = screen.height;
+            screenEntity.width = screen.width;
+            screenEntity.ip = screen.ip;
+        
+            screenEntity.grid = new Array(screen.height)
+            for(let i=0; i<screen.height; i++){
+                screenEntity.grid[i] = new Array(screen.width + 1).join( 'f' ); // 'f' = 15 the white color
+            }
+        
+            await this.repository.save(screenEntity);
+            return screenEntity.id
         }
-    
-        await this.repository.save(screenEntity);
-        return screenEntity.id
+        return previouScreen.id
       }
 }

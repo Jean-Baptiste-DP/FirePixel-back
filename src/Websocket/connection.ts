@@ -25,16 +25,17 @@ export class Connection {
         return freePhone
     }
 
-    newPhoneClient(client):number{
+    newPhoneClient(client):{idCursor:number, changed:boolean}{
         var index = this.searchIndexFromClient(client)
         if(index == -1){
             const freeSpace = this.getFreePhone()
             if(freeSpace.length>0){
                 index = freeSpace[Math.floor(Math.random()*freeSpace.length)]
                 this.phones[index]=client
+                return {idCursor: index, changed: true}
             }
         }
-        return index
+        return {idCursor: index, changed:false}
     }
 
     searchIndexFromClient(client):number{
