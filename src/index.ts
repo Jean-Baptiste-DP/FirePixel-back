@@ -34,12 +34,12 @@ AppDataSource.initialize().then(async () => {
 
     wss.on('connection', function connection(ws) {
 
-        ws.on('message', function incoming(string:string) {
+        ws.on('message', async function incoming(string:string) {
     
             let data = JSON.parse(string);
             let response;
 
-            if(data.req && data.req=="connexion" && data.type){
+            if(data.req && data.req=="connection" && data.type){
                 if(data.type=="screen"){
                     console.log("New screen")
                     WsConnection.newScreen(ws)
@@ -47,34 +47,37 @@ AppDataSource.initialize().then(async () => {
                 }else{
                     console.log("New phone")
                     const index = WsConnection.newPhoneClient(ws)
-                    response = cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
+                    response = await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
                 }
             }else if(data.req && data.req=="move" && data.x!=undefined && data.y!=undefined){
-                console.log("Move")
                 const index = WsConnection.searchIndexFromClient(ws)
-                response = cursorService.move({idScreen:1, idCursor: index},data)
+                response = await cursorService.move({idScreen:1, idCursor: index},data)
             }else if(data.req && data.req=="chgColor" && data.color!=undefined){
-                console.log("ChgColor")
                 const index = WsConnection.searchIndexFromClient(ws)
-                response = pixelService.create({idScreen:1, idCursor: index}, data)
+                response = await pixelService.create({idScreen:1, idCursor: index}, data)
             }else{
                 console.log("Error in websocket : ")
                 console.log(data)
             }
 
-            if(response.req && response.req=="move" && response.id!=-1){
+            if(response && response.req && response.req=="move" && response.id!=-1){
                 ws.send(JSON.stringify(response))
                 if(WsConnection.screen){
                     WsConnection.screen.send(JSON.stringify(response))
                 }
             }
-            else if(response.req && response.req=="chgColor" && response.color!=-1){
+            else if(response && response.req && response.req=="chgColor" && response.color!=-1){
                 if(WsConnection.screen){
                     WsConnection.screen.send(JSON.stringify(response))
                 }
                 for(let i=0; i<WsConnection.nbPhone; i++){
-                    WsConnection.phones[i].send(JSON.stringify(response))
+                    if(WsConnection.phones[i] && WsConnection.phones[i].readyState==WebSocket.OPEN){
+                        WsConnection.phones[i].send(JSON.stringify(response))
+                    }
                 }
+            }else{
+                console.log("Wrong response")
+                console.log(response)
             }
         });
     });
