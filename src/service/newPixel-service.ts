@@ -29,8 +29,8 @@ export class NewPixelService{
         if(cursorEntity){
             const pixel: NewPixel = new NewPixel();
 
-            pixel.positionX = cursorEntity.positionX;
-            pixel.positionY = cursorEntity.positionY;
+            pixel.positionX = cursorEntity.positionX + chgcolor.x;
+            pixel.positionY = cursorEntity.positionY + chgcolor.y;
             pixel.color = chgcolor.color;
             pixel.previousColor = 0;
             // TODO prendre la vraie couleur précédente
@@ -40,7 +40,7 @@ export class NewPixelService{
 
             await this.pixelRepository.save(pixel);
 
-            return {req: "chgColor", x: cursorEntity.positionX, y: cursorEntity.positionY, color: chgcolor.color}
+            return {req: "chgColor", x: cursorEntity.positionX + chgcolor.x, y: cursorEntity.positionY + chgcolor.y, color: chgcolor.color}
         }
         return {req:"chgColor",x:0,y:0,color:-1}
     }
