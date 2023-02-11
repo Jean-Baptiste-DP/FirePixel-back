@@ -1,5 +1,6 @@
 import { Repository } from "typeorm";
 import { ScreenDTO } from "../dto/screenDto";
+import { ChgColorRequest } from "../dto/requestDto";
 import { Screen } from "../entity/Screen";
 
 export class ScreenService{
@@ -29,7 +30,7 @@ export class ScreenService{
         return previouScreen.id;
     }
     
-    async getScreen(){ //* prendre id pour plusieurs écrans
+    async getScreen():Promise<number[][]>{ //* prendre id pour plusieurs écrans
         const storedScreen = (await this.repository.find())[0]
 
         if(storedScreen){
@@ -45,6 +46,18 @@ export class ScreenService{
         }else{
             console.log("no screen")
             return [[]];
+        }
+    }
+
+    async changeScreen(requ : ChgColorRequest):Promise<void>{
+        const storedScreen = (await this.repository.find())[0]
+
+        if(storedScreen){
+            console.log("stored screen")
+            storedScreen.grid[requ.y] = storedScreen.grid[requ.y].substring(0, requ.x) + requ.color.toString(16) + storedScreen.grid[requ.y].substring(requ.x + 1);;
+            await this.repository.save(storedScreen);
+        }else{
+            console.log("no screen")
         }
     }
 }

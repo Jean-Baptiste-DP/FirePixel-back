@@ -55,6 +55,7 @@ AppDataSource.initialize().then(async () => {
             }else if(data.req && data.req=="chgColor" && data.color!=undefined){
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = await pixelService.create({idScreen:1, idCursor: index}, data)
+                screenService.changeScreen(response);
             }else{
                 console.log("Error in websocket : ")
                 console.log(data)
