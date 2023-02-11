@@ -9,14 +9,10 @@ export class ScreenService{
 
     async create(screen: ScreenDTO): Promise<number> {
         // * à changer si plusieurs écrans
-        const previouScreen = await this.repository.find({
-            order:{
-                id:"DESC"
-            },
-            take:1
-        })[0]
+        const previouScreen = (await this.repository.find())[0];
 
         if(!previouScreen){
+            console.log("Didn't find screen")
             const screenEntity: Screen = new Screen();
             screenEntity.height = screen.height;
             screenEntity.width = screen.width;
@@ -30,6 +26,25 @@ export class ScreenService{
             await this.repository.save(screenEntity);
             return screenEntity.id
         }
-        return previouScreen.id
-      }
+        return previouScreen.id;
+    }
+    
+    async getScreen(){ //* prendre id pour plusieurs écrans
+        const storedScreen = (await this.repository.find())[0]
+
+        if(storedScreen){
+            console.log("stored screen")
+            let screen : number[][]= new Array(storedScreen.height);
+            for(let i=0; i<storedScreen.height; i++){
+                screen[i] = new Array(storedScreen.width);
+                for(let j=0; j<storedScreen.width; j++){
+                    screen[i][j] = parseInt(storedScreen.grid[i][j], 16);
+                }
+            }
+            return screen;
+        }else{
+            console.log("no screen")
+            return [[]];
+        }
+    }
 }

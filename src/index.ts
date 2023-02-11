@@ -43,7 +43,7 @@ AppDataSource.initialize().then(async () => {
                 if(data.type=="screen"){
                     console.log("New screen")
                     WsConnection.newScreen(ws)
-                    screenService.create({height:100,width:100, ip:"127.0.0.1"})
+                    console.log("Screen id", await screenService.create({height:100,width:100, ip:"127.0.0.1"}))
                 }else{
                     console.log("New phone")
                     const index = WsConnection.newPhoneClient(ws)
@@ -81,6 +81,10 @@ AppDataSource.initialize().then(async () => {
             }
         });
     });
+
+    app.get('/grid', async (req, res) => {
+        res.send(await screenService.getScreen());
+      })
 
     server.listen(process.env.PORT, () => console.log(`Lisening on port :`+process.env.PORT))
 

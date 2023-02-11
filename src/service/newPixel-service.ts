@@ -38,7 +38,7 @@ export class NewPixelService{
             pixel.grid = cursorEntity.screen;
             pixel.cursor = cursorEntity;
 
-            await this.pixelRepository.save(pixel);
+            // await this.pixelRepository.save(pixel);
 
             return {req: "chgColor", x: cursorEntity.positionX + chgcolor.x, y: cursorEntity.positionY + chgcolor.y, color: chgcolor.color}
         }
