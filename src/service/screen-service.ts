@@ -49,12 +49,12 @@ export class ScreenService{
         }
     }
 
-    async changeScreen(requ : ChgColorRequest):Promise<void>{
+    async changeScreen(requete : ChgColorRequest):Promise<void>{
         const storedScreen = (await this.repository.find())[0]
 
         if(storedScreen){
             console.log("stored screen")
-            storedScreen.grid[requ.y] = storedScreen.grid[requ.y].substring(0, requ.x) + requ.color.toString(16) + storedScreen.grid[requ.y].substring(requ.x + 1);;
+            storedScreen.grid[requete.y] = storedScreen.grid[requete.y].substring(0, requete.x) + requete.color.toString(16) + storedScreen.grid[requete.y].substring(requete.x + 1);;
             await this.repository.save(storedScreen);
         }else{
             console.log("no screen")

@@ -68,8 +68,8 @@ export class CursorService{
         )
 
         if(cursorEntity){
-            cursorEntity.positionX+=move.x;
-            cursorEntity.positionY+=move.y;
+            cursorEntity.positionX= Math.max(Math.min(cursorEntity.positionX+move.x, 100), 0);
+            cursorEntity.positionY= Math.max(Math.min(cursorEntity.positionY+move.y, 100), 0);
 
             await this.cursorRepository.save(cursorEntity);
 
