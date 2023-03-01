@@ -41,13 +41,13 @@ AppDataSource.initialize().then(async () => {
 
             if(data.req && data.req=="connection" && data.type){
                 if(data.type=="screen"){
-                    console.log("New screen")
                     WsConnection.newScreen(ws)
-                    console.log("Screen id", await screenService.create({height:100,width:100, ip:"127.0.0.1"}))
+                    response ={req:data.req, type:data.type, id: await screenService.create({height:100,width:100, ip:"127.0.0.1"})}
+                    WsConnection.screen.send(JSON.stringify(response))
                 }else{
                     console.log("New phone")
                     const index = WsConnection.newPhoneClient(ws)
-                    response = await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
+                    response =  await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
                 }
             }else if(data.req && data.req=="move" && data.x!=undefined && data.y!=undefined){
                 const index = WsConnection.searchIndexFromClient(ws)
@@ -56,7 +56,10 @@ AppDataSource.initialize().then(async () => {
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = await pixelService.create({idScreen:1, idCursor: index}, data)
                 screenService.changeScreen(response);
-            }else{
+            }else if(data.req && data.id && data.req=="update"){
+                response = {req : data.req, id : data.id}
+            }
+            else{
                 console.log("Error in websocket : ")
                 console.log(data)
             }
@@ -76,7 +79,14 @@ AppDataSource.initialize().then(async () => {
                         WsConnection.phones[i].send(JSON.stringify(response))
                     }
                 }
-            }else{
+            }
+            else if(response && response.req == "update" && response.id) {
+                console.log("update sended by screen id " + response.id)
+            }
+            else if (response && response.req == "connection" && response.type=="screen" && response.id) {
+                console.log(" New Screen, id : ", response.id)
+            }
+            else{
                 console.log("Wrong response")
                 console.log(response)
             }
