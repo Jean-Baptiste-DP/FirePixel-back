@@ -11,6 +11,7 @@ const express = require('express')
 const app = express()
 const server = require('http').createServer(app);
 const WebSocket = require('ws');
+const validToken = "admin";
 
 const wss = new WebSocket.Server({ server: server });
 
@@ -40,11 +41,13 @@ AppDataSource.initialize().then(async () => {
             let response;
 
             if(data.req && data.req=="connection" && data.type){
-                if(data.type=="screen"){
+                if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
-                    response ={req:data.req, type:data.type, id: await screenService.create({height:100,width:100, ip:"127.0.0.1"})}
+                    response ={req:data.req, type:data.type, id: await screenService.create({height:data.height,width:data.width, ip:"127.0.0.1"})}
                     WsConnection.screen.send(JSON.stringify(response))
-                }else{
+                }else if(data.type=="screen" && data.token != validToken){
+                    response = { req: data.req, type:data.type, res: "Error : Invalid token", token : data.token}
+                }else if (data.type =="phone"){
                     console.log("New phone")
                     const index = WsConnection.newPhoneClient(ws)
                     response =  await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
@@ -85,6 +88,9 @@ AppDataSource.initialize().then(async () => {
             }
             else if (response && response.req == "connection" && response.type=="screen" && response.id) {
                 console.log(" New Screen, id : ", response.id)
+            }
+            else if ( response.req && response.req == "connection" && response.type == "screen" && response.res == "Error : Invalid token") {
+                console.log(" Failed attemp to log screen , Invalid token: ", response.token)
             }
             else{
                 console.log("Wrong response")
