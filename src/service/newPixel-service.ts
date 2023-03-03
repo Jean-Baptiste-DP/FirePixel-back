@@ -15,9 +15,6 @@ export class NewPixelService{
         const cursorEntity = await this.cursorRepository.findOne(
             {
                 where:{
-                    screen: {
-                        id: cursor.idScreen
-                    },
                     idCursor: cursor.idCursor
                 },
                 order:{

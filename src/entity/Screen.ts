@@ -22,12 +22,11 @@ export class Screen {
     lastPixel: number
 
     //grid stored in 1 dimensional array, each element of the array is a line of the grid
-    //each value is encode with hexadecimal character 
+    //each value is encode with hexadecimal character
     // 0 -> 0 ... 9 -> 9
     // 10 -> a ... 15 -> f
     @Column('simple-array')
     grid: string[];
-
 
     @OneToMany(() => NewPixel, pixel => pixel.grid)
     pixels: NewPixel[];

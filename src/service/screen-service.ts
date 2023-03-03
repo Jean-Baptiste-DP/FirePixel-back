@@ -1,16 +1,16 @@
-import { Repository } from "typeorm";
 import { ScreenDTO } from "../dto/screenDto";
 import { ChgColorRequest } from "../dto/requestDto";
 import { Screen } from "../entity/Screen";
+import { DRepoScreen } from "../DynamicRepo/DRepoScreen";
 
 export class ScreenService{
     constructor(
-        private repository: Repository<Screen>
+        private repository: DRepoScreen
     ){}
 
     async create(screen: ScreenDTO): Promise<number> {
         // * à changer si plusieurs écrans
-        const previouScreen = (await this.repository.find())[0];
+        const previouScreen = await this.repository.findOne();
 
         if(!previouScreen){
             console.log("Didn't find screen")
@@ -24,17 +24,16 @@ export class ScreenService{
                 screenEntity.grid[i] = new Array(screen.width + 1).join( 'f' ); // 'f' = 15 the white color
             }
         
-            await this.repository.save(screenEntity);
+            this.repository.save(screenEntity);
             return screenEntity.id
         }
         return previouScreen.id;
     }
     
     async getScreen():Promise<number[][]>{ //* prendre id pour plusieurs écrans
-        const storedScreen = (await this.repository.find())[0]
+        const storedScreen = await this.repository.findOne()
 
         if(storedScreen){
-            console.log("stored screen")
             let screen : number[][]= new Array(storedScreen.height);
             for(let i=0; i<storedScreen.height; i++){
                 screen[i] = new Array(storedScreen.width);
@@ -50,12 +49,10 @@ export class ScreenService{
     }
 
     async changeScreen(requete : ChgColorRequest):Promise<void>{
-        const storedScreen = (await this.repository.find())[0]
+        const storedScreen = await this.repository.findOne()
 
         if(storedScreen){
-            console.log("stored screen")
-            storedScreen.grid[requete.y] = storedScreen.grid[requete.y].substring(0, requete.x) + requete.color.toString(16) + storedScreen.grid[requete.y].substring(requete.x + 1);;
-            await this.repository.save(storedScreen);
+            storedScreen.grid[requete.y] = storedScreen.grid[requete.y].substring(0, requete.x) + requete.color.toString(16) + storedScreen.grid[requete.y].substring(requete.x + 1);
         }else{
             console.log("no screen")
         }

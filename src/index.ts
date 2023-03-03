@@ -1,4 +1,5 @@
 import { AppDataSource } from "./data-source"
+import { DRepoScreen } from "./DynamicRepo/DRepoScreen"
 import { Cursor } from "./entity/Cursor"
 import { NewPixel } from "./entity/NewPixel"
 import { Screen } from "./entity/Screen"
@@ -26,10 +27,18 @@ AppDataSource.initialize().then(async () => {
     const CursorRepository = AppDataSource.getRepository(Cursor)
     const PixelRepository = AppDataSource.getRepository(NewPixel)
 
+    //Dynamic Repositories
+    const ScreenDynRepository = new DRepoScreen(ScreenRepository);
+
     // Services
-    const screenService = new ScreenService(ScreenRepository);
-    const cursorService = new CursorService(CursorRepository, ScreenRepository)
+    const screenService = new ScreenService(ScreenDynRepository);
+    const cursorService = new CursorService(CursorRepository, ScreenDynRepository)
     const pixelService = new NewPixelService(CursorRepository, PixelRepository)
+
+    // Regular save of Dynamic Repositories
+
+    // const saveScreenDynRepo = setInterval(ScreenDynRepository.saveInDB, 10*60*1000);// save Screen every 10 minutes
+    const saveScreenDynRepo = setInterval(async ()=>{ScreenDynRepository.saveInDB()}, 2*60*1000) // 2 min
 
     // Websocket call
 
@@ -40,6 +49,7 @@ AppDataSource.initialize().then(async () => {
             let data = JSON.parse(string);
             let response;
 
+            // take request
             if(data.req && data.req=="connection" && data.type){
                 if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
@@ -67,6 +77,8 @@ AppDataSource.initialize().then(async () => {
                 console.log(data)
             }
 
+
+            // send response
             if(response && response.req && response.req=="move" && response.id!=-1){
                 ws.send(JSON.stringify(response))
                 if(WsConnection.screen){
