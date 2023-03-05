@@ -13,8 +13,12 @@ const app = express()
 const server = require('http').createServer(app);
 const WebSocket = require('ws');
 const validToken = "admin";
+var cors = require('cors');
 
 const wss = new WebSocket.Server({ server: server });
+app.use(cors({
+    origin: process.env.FRONT_URL
+}));
 
 AppDataSource.initialize().then(async () => {
 
