@@ -1,6 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
-import { NewPixel } from "./NewPixel"
-import { Cursor } from "./Cursor"
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
 @Entity()
 export class Screen {
@@ -27,10 +25,4 @@ export class Screen {
     // 10 -> a ... 15 -> f
     @Column('simple-array')
     grid: string[];
-
-    @OneToMany(() => NewPixel, pixel => pixel.grid)
-    pixels: NewPixel[];
-
-    @OneToMany(() => Cursor, cursor => cursor.screen)
-    cursors: Cursor[];
 }

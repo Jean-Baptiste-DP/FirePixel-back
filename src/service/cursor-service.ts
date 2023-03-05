@@ -1,13 +1,12 @@
-import { Repository } from "typeorm";
 import { CreateCursorDTO, ModifCursorDTO } from "../dto/cursorDto";
 import { MoveRequest } from "../dto/requestDto";
 import { DRepoScreen } from "../DynamicRepo/DRepoScreen";
+import { DRepoCursor } from "../DynamicRepo/DRepoCursor";
 import { Cursor } from "../entity/Cursor";
-import { Screen } from "../entity/Screen";
 
 export class CursorService{
     constructor(
-        private cursorRepository: Repository<Cursor>,
+        private cursorRepository: DRepoCursor,
         private screenRepository: DRepoScreen
     ){}
 
@@ -18,30 +17,21 @@ export class CursorService{
 
             if(screen){
                 const cursorEntity: Cursor = new Cursor();
-                cursorEntity.screen = screen;
+                cursorEntity.idScreen = screen.id;
 
                 cursorEntity.ip = cursor.ip;
                 cursorEntity.positionX = Math.floor(Math.random() * screen.width);
                 cursorEntity.positionY = Math.floor(Math.random() * screen.height);
                 cursorEntity.idCursor = cursor.idCursor
             
-                await this.cursorRepository.save(cursorEntity);
+                this.cursorRepository.save(cursorEntity);
 
                 return {req:"move", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
             }
             console.log("Aucun écran trouvé")
             return {req:"move",x:0,y:0,id:-1}
         }else{
-            const cursorEntity = await this.cursorRepository.findOne(
-                {
-                    where:{ // * ajout de recherche par id sreen si plusieurs
-                        idCursor: cursor.idCursor
-                    },
-                    order:{
-                        firstConnection:"DESC"
-                    }
-                }
-            )
+            const cursorEntity = this.cursorRepository.findOneById(cursor.idCursor)
             if(cursorEntity){
                 return{req:"move", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
             }
@@ -53,28 +43,18 @@ export class CursorService{
     }
 
     async move(cursor: ModifCursorDTO, move: MoveRequest):Promise<MoveRequest>{
-        const cursorEntity = await this.cursorRepository.findOne(
-            {
-                where:{// * ajout de recherche par id sreen si plusieurs
-                    idCursor: cursor.idCursor
-                },
-                order:{
-                    firstConnection:"DESC"
-                }
-            }
-        )
+        const cursorEntity = this.cursorRepository.findOneById(cursor.idCursor)
+        const screen = await this.screenRepository.findOne()
 
-        if(cursorEntity){
-            cursorEntity.positionX= Math.max(Math.min(cursorEntity.positionX+move.x, 100), 0); // ! prendre en compte les dimensions de l'écran
-            cursorEntity.positionY= Math.max(Math.min(cursorEntity.positionY+move.y, 100), 0);
+        if(cursorEntity && screen){
+            cursorEntity.positionX= Math.max(Math.min(cursorEntity.positionX+move.x, screen.width), 0);
+            cursorEntity.positionY= Math.max(Math.min(cursorEntity.positionY+move.y, screen.height), 0);
 
-            await this.cursorRepository.save(cursorEntity);
+            this.cursorRepository.save(cursorEntity);
 
             return {req:"move", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
         }else{
             return {req:"move",x:0,y:0,id:-1}
         }
     }
-
-    
 }

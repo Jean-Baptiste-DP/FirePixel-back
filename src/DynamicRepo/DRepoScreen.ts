@@ -1,5 +1,4 @@
 import { Repository } from "typeorm";
-import { ScreenObj } from "../dto/screenDto";
 import { Screen } from "../entity/Screen";
 
 export class DRepoScreen{
@@ -14,9 +13,7 @@ export class DRepoScreen{
             width: 0,
             ip: "",
             lastPixel: 0,
-            grid: [],
-            pixels: [],
-            cursors: []
+            grid: []
         };
 
     async findOne(): Promise<Screen>{

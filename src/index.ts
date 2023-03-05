@@ -1,11 +1,14 @@
 import { AppDataSource } from "./data-source"
-import { DRepoScreen } from "./DynamicRepo/DRepoScreen"
-import { Cursor } from "./entity/Cursor"
-import { NewPixel } from "./entity/NewPixel"
+
 import { Screen } from "./entity/Screen"
+
+import { DRepoScreen } from "./DynamicRepo/DRepoScreen"
+import { DRepoCursor } from "./DynamicRepo/DRepoCursor"
+
 import { CursorService } from "./service/cursor-service"
 import { NewPixelService } from "./service/newPixel-service"
 import { ScreenService } from "./service/screen-service"
+
 import { Connection } from "./Websocket/connection"
 
 const express = require('express')
@@ -28,16 +31,15 @@ AppDataSource.initialize().then(async () => {
 
     // Repositories
     const ScreenRepository = AppDataSource.getRepository(Screen)
-    const CursorRepository = AppDataSource.getRepository(Cursor)
-    const PixelRepository = AppDataSource.getRepository(NewPixel)
 
     //Dynamic Repositories
     const ScreenDynRepository = new DRepoScreen(ScreenRepository);
+    const CursorDynRepository = new DRepoCursor();
 
     // Services
     const screenService = new ScreenService(ScreenDynRepository);
-    const cursorService = new CursorService(CursorRepository, ScreenDynRepository)
-    const pixelService = new NewPixelService(CursorRepository, PixelRepository)
+    const cursorService = new CursorService(CursorDynRepository, ScreenDynRepository)
+    const pixelService = new NewPixelService(CursorDynRepository)
 
     // Regular save of Dynamic Repositories
 
@@ -54,7 +56,7 @@ AppDataSource.initialize().then(async () => {
             let response;
 
             // take request
-            if(data.req && data.req=="connection" && data.type){
+            if(data?.req=="connection" && data.type){
                 if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
                     response ={req:data.req, type:data.type, id: await screenService.create({height:data.height,width:data.width, ip:"127.0.0.1"})}
@@ -66,14 +68,14 @@ AppDataSource.initialize().then(async () => {
                     const index = WsConnection.newPhoneClient(ws)
                     response =  await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
                 }
-            }else if(data.req && data.req=="move" && data.x!=undefined && data.y!=undefined){
+            }else if(data?.req=="move" && data.x!=undefined && data.y!=undefined){
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = await cursorService.move({idScreen:1, idCursor: index},data)
-            }else if(data.req && data.req=="chgColor" && data.color!=undefined){
+            }else if(data?.req=="chgColor" && data.color!=undefined){
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = await pixelService.create({idScreen:1, idCursor: index}, data)
                 screenService.changeScreen(response);
-            }else if(data.req && data.id && data.req=="update"){
+            }else if(data?.req=="update" && data.id){
                 response = {req : data.req, id : data.id}
             }
             else{
@@ -83,13 +85,13 @@ AppDataSource.initialize().then(async () => {
 
 
             // send response
-            if(response && response.req && response.req=="move" && response.id!=-1){
+            if(response?.req && response.req=="move" && response.id!=-1){
                 ws.send(JSON.stringify(response))
                 if(WsConnection.screen){
                     WsConnection.screen.send(JSON.stringify(response))
                 }
             }
-            else if(response && response.req && response.req=="chgColor" && response.color!=-1){
+            else if(response?.req && response.req=="chgColor" && response.color!=-1){
                 if(WsConnection.screen){
                     WsConnection.screen.send(JSON.stringify(response))
                 }
@@ -99,13 +101,13 @@ AppDataSource.initialize().then(async () => {
                     }
                 }
             }
-            else if(response && response.req == "update" && response.id) {
+            else if(response?.req == "update" && response.id) {
                 console.log("update sended by screen id " + response.id)
             }
-            else if (response && response.req == "connection" && response.type=="screen" && response.id) {
+            else if (response?.req == "connection" && response.type=="screen" && response.id) {
                 console.log(" New Screen, id : ", response.id)
             }
-            else if ( response.req && response.req == "connection" && response.type == "screen" && response.res == "Error : Invalid token") {
+            else if ( response?.req == "connection" && response.type == "screen" && response.res == "Error : Invalid token") {
                 console.log(" Failed attemp to log screen , Invalid token: ", response.token)
             }
             else{
