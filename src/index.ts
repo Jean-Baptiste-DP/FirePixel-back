@@ -39,7 +39,7 @@ AppDataSource.initialize().then(async () => {
     // Services
     const screenService = new ScreenService(ScreenDynRepository);
     const cursorService = new CursorService(CursorDynRepository, ScreenDynRepository)
-    const pixelService = new NewPixelService(CursorDynRepository)
+    const pixelService = new NewPixelService(CursorDynRepository, ScreenDynRepository)
 
     // Regular save of Dynamic Repositories
 
