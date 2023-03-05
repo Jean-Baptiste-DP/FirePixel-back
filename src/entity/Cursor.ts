@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany } from "typeorm"
-import { NewPixel } from "./NewPixel"
 import { Screen } from "./Screen"
 
 @Entity()
@@ -26,7 +25,4 @@ export class Cursor {
 
     @ManyToOne(() => Screen, (screen) => screen.cursors)
     screen: Screen;
-
-    @OneToMany(() => NewPixel, pixel => pixel.cursor)
-    pixels : NewPixel[];
 }

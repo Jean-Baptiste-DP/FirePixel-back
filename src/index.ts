@@ -1,7 +1,6 @@
 import { AppDataSource } from "./data-source"
 import { DRepoScreen } from "./DynamicRepo/DRepoScreen"
 import { Cursor } from "./entity/Cursor"
-import { NewPixel } from "./entity/NewPixel"
 import { Screen } from "./entity/Screen"
 import { CursorService } from "./service/cursor-service"
 import { NewPixelService } from "./service/newPixel-service"
@@ -29,7 +28,6 @@ AppDataSource.initialize().then(async () => {
     // Repositories
     const ScreenRepository = AppDataSource.getRepository(Screen)
     const CursorRepository = AppDataSource.getRepository(Cursor)
-    const PixelRepository = AppDataSource.getRepository(NewPixel)
 
     //Dynamic Repositories
     const ScreenDynRepository = new DRepoScreen(ScreenRepository);
@@ -37,7 +35,7 @@ AppDataSource.initialize().then(async () => {
     // Services
     const screenService = new ScreenService(ScreenDynRepository);
     const cursorService = new CursorService(CursorRepository, ScreenDynRepository)
-    const pixelService = new NewPixelService(CursorRepository, PixelRepository)
+    const pixelService = new NewPixelService(CursorRepository)
 
     // Regular save of Dynamic Repositories
 
