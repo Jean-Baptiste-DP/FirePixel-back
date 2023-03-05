@@ -2,24 +2,16 @@ import { Repository } from "typeorm";
 import { ModifCursorDTO } from "../dto/cursorDto";
 import { ChgColorRequest } from "../dto/requestDto";
 import { Cursor } from "../entity/Cursor";
+import { DRepoCursor } from "../DynamicRepo/DRepoCursor";
 
 export class NewPixelService{
     constructor(
-        private cursorRepository: Repository<Cursor>,
+        private cursorRepository: DRepoCursor,
     ){}
 
-    async create(cursor: ModifCursorDTO, chgcolor: ChgColorRequest): Promise<ChgColorRequest> {
+    create(cursor: ModifCursorDTO, chgcolor: ChgColorRequest): ChgColorRequest {
 
-        const cursorEntity = await this.cursorRepository.findOne(
-            {
-                where:{
-                    idCursor: cursor.idCursor
-                },
-                order:{
-                    firstConnection:"DESC"
-                }
-            }
-        )
+        const cursorEntity = this.cursorRepository.findOneById(cursor.idCursor)
 
         if(cursorEntity){
             // ! Log les pixels dans un fichier à part

@@ -13,8 +13,7 @@ export class DRepoScreen{
             width: 0,
             ip: "",
             lastPixel: 0,
-            grid: [],
-            cursors: []
+            grid: []
         };
 
     async findOne(): Promise<Screen>{
