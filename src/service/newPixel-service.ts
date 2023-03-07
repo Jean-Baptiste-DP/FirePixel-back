@@ -19,8 +19,8 @@ export class NewPixelService{
         if(cursorEntity && screen){
             // ! Log les pixels dans un fichier à part
 
-            let posX = Math.max(Math.min(cursorEntity.positionX + chgcolor.x, screen.width), 0);
-            let posY = Math.max(Math.min(cursorEntity.positionY + chgcolor.y, screen.height), 0);
+            let posX = Math.max(Math.min(cursorEntity.positionX + chgcolor.x, screen.width - 1), 0);
+            let posY = Math.max(Math.min(cursorEntity.positionY + chgcolor.y, screen.height - 1), 0);
 
             return {req: "chgColor", x: posX, y: posY, color: chgcolor.color}
         }

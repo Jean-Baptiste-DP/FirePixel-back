@@ -47,8 +47,8 @@ export class CursorService{
         const screen = await this.screenRepository.findOne()
 
         if(cursorEntity && screen){
-            cursorEntity.positionX= Math.max(Math.min(cursorEntity.positionX+move.x, screen.width), 0);
-            cursorEntity.positionY= Math.max(Math.min(cursorEntity.positionY+move.y, screen.height), 0);
+            cursorEntity.positionX= Math.max(Math.min(cursorEntity.positionX+move.x, screen.width - 1), 0);
+            cursorEntity.positionY= Math.max(Math.min(cursorEntity.positionY+move.y, screen.height - 1), 0);
 
             this.cursorRepository.save(cursorEntity);
 
