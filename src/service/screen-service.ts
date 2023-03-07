@@ -26,6 +26,20 @@ export class ScreenService{
         
             this.repository.save(screenEntity);
             return screenEntity.id
+        }else if(previouScreen.height!=screen.height || previouScreen.width!=screen.width){
+            let previousGrid = previouScreen.grid
+            previouScreen.grid = new Array(screen.height)
+            for(let i=0; i<screen.height; i++){
+                if(i>=previouScreen.height){
+                    previouScreen.grid[i] = new Array(screen.width + 1).join( 'f' );
+                }else if(screen.width>previouScreen.width){
+                    previouScreen.grid[i] = previousGrid[i] + new Array(screen.width - previouScreen.width + 1).join('f');
+                }else{
+                    previouScreen.grid[i] = previousGrid[i].substring(0, screen.width)
+                }
+            }
+            previouScreen.height = screen.height;
+            previouScreen.width = screen.width;
         }
         return previouScreen.id;
     }

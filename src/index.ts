@@ -59,6 +59,7 @@ AppDataSource.initialize().then(async () => {
             if(data?.req=="connection" && data.type){
                 if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
+                    console.log("Height : ", data.height, ", width : ", data.width)
                     response ={req:data.req, type:data.type, id: await screenService.create({height:data.height,width:data.width, ip:"127.0.0.1"})}
                     WsConnection.screen.send(JSON.stringify(response))
                 }else if(data.type=="screen" && data.token != validToken){
@@ -105,10 +106,15 @@ AppDataSource.initialize().then(async () => {
                 console.log("update sended by screen id " + response.id)
             }
             else if (response?.req == "connection" && response.type=="screen" && response.id) {
-                console.log(" New Screen, id : ", response.id)
+                if(WsConnection.screen){
+                    WsConnection.screen.send(JSON.stringify(response))
+                }
             }
             else if ( response?.req == "connection" && response.type == "screen" && response.res == "Error : Invalid token") {
                 console.log(" Failed attemp to log screen , Invalid token: ", response.token)
+            }
+            else if (response?.req == "connection") {
+                ws.send(JSON.stringify(response))
             }
             else{
                 console.log("Wrong response")
@@ -118,7 +124,9 @@ AppDataSource.initialize().then(async () => {
     });
 
     app.get('/grid', async (req, res) => {
-        res.send(await screenService.getScreen());
+        let grid = await screenService.getScreen()
+        console.log("GET /grid Height : ", grid.length, ", width : ", grid[0].length)
+        res.send(grid);
       })
 
     server.listen(process.env.PORT, () => console.log(`Lisening on port :`+process.env.PORT))
