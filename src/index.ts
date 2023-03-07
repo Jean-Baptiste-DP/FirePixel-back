@@ -59,7 +59,6 @@ AppDataSource.initialize().then(async () => {
             if(data?.req=="connection" && data.type){
                 if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
-                    console.log("Height : ", data.height, ", width : ", data.width)
                     response ={req:data.req, type:data.type, id: await screenService.create({height:data.height,width:data.width, ip:"127.0.0.1"})}
                     WsConnection.screen.send(JSON.stringify(response))
                 }else if(data.type=="screen" && data.token != validToken){
@@ -125,7 +124,6 @@ AppDataSource.initialize().then(async () => {
 
     app.get('/grid', async (req, res) => {
         let grid = await screenService.getScreen()
-        console.log("GET /grid Height : ", grid.length, ", width : ", grid[0].length)
         res.send(grid);
       })
 
