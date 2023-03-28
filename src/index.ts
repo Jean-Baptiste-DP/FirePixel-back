@@ -77,6 +77,10 @@ AppDataSource.initialize().then(async () => {
                 screenService.changeScreen(response);
             }else if(data?.req=="update" && data.id){
                 response = {req : data.req, id : data.id}
+            }else if(data?.req=="bigCursor"){
+                console.log("Big Cursor")
+                const index = WsConnection.searchIndexFromClient(ws)
+                response = {req: data.req, id: index}
             }
             else{
                 console.log("Error in websocket : ")
@@ -114,6 +118,8 @@ AppDataSource.initialize().then(async () => {
             }
             else if (response?.req == "connection") {
                 ws.send(JSON.stringify(response))
+            }else if(response?.req == "bigCursor"){
+                WsConnection.screen.send(JSON.stringify(response))
             }
             else{
                 console.log("Wrong response")
