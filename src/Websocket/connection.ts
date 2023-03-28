@@ -25,6 +25,10 @@ export class Connection {
         return freePhone
     }
 
+    disconnectPhone(index:number){
+        this.phones[index] = null
+    }
+
     newPhoneClient(client):{idCursor:number, changed:boolean}{
         var index = this.searchIndexFromClient(client)
         if(index == -1){
@@ -33,6 +37,8 @@ export class Connection {
                 index = freeSpace[Math.floor(Math.random()*freeSpace.length)]
                 this.phones[index]=client
                 return {idCursor: index, changed: true}
+            }else{
+                console.log("No more free space for new phone")
             }
         }
         return {idCursor: index, changed:false}

@@ -43,8 +43,7 @@ AppDataSource.initialize().then(async () => {
 
     // Regular save of Dynamic Repositories
 
-    // const saveScreenDynRepo = setInterval(ScreenDynRepository.saveInDB, 10*60*1000);// save Screen every 10 minutes
-    const saveScreenDynRepo = setInterval(async ()=>{ScreenDynRepository.saveInDB()}, 2*60*1000) // 2 min
+    const saveScreenDynRepo = setInterval(ScreenDynRepository.saveInDB, 10*60*1000);// save Screen every 10 minutes
 
     // Websocket call
 
@@ -130,7 +129,19 @@ AppDataSource.initialize().then(async () => {
                 console.log(response)
             }
         });
+        ws.on("close", (event) => {
+            const index = WsConnection.searchIndexFromClient(ws)
+            if(index!=-1){
+                WsConnection.disconnectPhone(index)
+                if(WsConnection.screen){
+                    WsConnection.screen.send(JSON.stringify({req:"disconnexion", id:index}))
+                }
+            }
+            
+        });
     });
+
+    
 
     app.get('/grid', async (req, res) => {
         let grid = await screenService.getScreen()
