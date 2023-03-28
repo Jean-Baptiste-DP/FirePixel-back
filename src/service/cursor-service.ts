@@ -26,18 +26,18 @@ export class CursorService{
             
                 this.cursorRepository.save(cursorEntity);
 
-                return {req:"connection", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
+                return {req:"connection_phone", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
             }
             console.log("Aucun écran trouvé")
-            return {req:"connection",x:0,y:0,id:-1}
+            return {req:"connection_phone",x:0,y:0,id:-1}
         }else{
             const cursorEntity = this.cursorRepository.findOneById(cursor.idCursor)
             if(cursorEntity){
-                return{req:"connection", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
+                return{req:"connection_phone", x:cursorEntity.positionX,y:cursorEntity.positionY,id:cursorEntity.idCursor}
             }
             else{
                 console.log("Aucun curseur trouvé")
-                return {req:"connection",x:0,y:0,id:-1}
+                return {req:"connection_phone",x:0,y:0,id:-1}
             }
         }
     }

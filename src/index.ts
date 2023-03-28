@@ -56,19 +56,20 @@ AppDataSource.initialize().then(async () => {
             let response;
 
             // take request
-            if(data?.req=="connection" && data.type){
+            if(data?.req=="connection_screen" && data.type){
                 if(data.type=="screen" && data.token == validToken){
                     WsConnection.newScreen(ws)
                     response ={req:data.req, type:data.type, id: await screenService.create({height:data.height,width:data.width, ip:"127.0.0.1"})}
-                    WsConnection.screen.send(JSON.stringify(response))
                 }else if(data.type=="screen" && data.token != validToken){
                     response = { req: data.req, type:data.type, res: "Error : Invalid token", token : data.token}
-                }else if (data.type =="phone"){
-                    console.log("New phone")
-                    const index = WsConnection.newPhoneClient(ws)
-                    response =  await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
                 }
-            }else if(data?.req=="move" && data.x!=undefined && data.y!=undefined){
+            }
+            else if(data?.req=="connection_phone" && data.type && data.type =="phone"){
+                console.log("New phone")
+                const index = WsConnection.newPhoneClient(ws)
+                response =  await cursorService.create({idScreen:1, ip:"127.0.0.1", ...index})
+            }
+            else if(data?.req=="move" && data.x!=undefined && data.y!=undefined){
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = await cursorService.move({idScreen:1, idCursor: index},data)
             }else if(data?.req=="chgColor" && data.color!=undefined){
@@ -78,7 +79,6 @@ AppDataSource.initialize().then(async () => {
             }else if(data?.req=="update" && data.id){
                 response = {req : data.req, id : data.id}
             }else if(data?.req=="bigCursor"){
-                console.log("Big Cursor")
                 const index = WsConnection.searchIndexFromClient(ws)
                 response = {req: data.req, id: index}
             }
@@ -108,16 +108,20 @@ AppDataSource.initialize().then(async () => {
             else if(response?.req == "update" && response.id) {
                 console.log("update sended by screen id " + response.id)
             }
-            else if (response?.req == "connection" && response.type=="screen" && response.id) {
+            else if (response?.req == "connection_screen" && response.type=="screen" && response.id) {
                 if(WsConnection.screen){
                     WsConnection.screen.send(JSON.stringify(response))
                 }
             }
-            else if ( response?.req == "connection" && response.type == "screen" && response.res == "Error : Invalid token") {
+            else if ( response?.req == "connection_screen" && response.type == "screen" && response.res == "Error : Invalid token") {
                 console.log(" Failed attemp to log screen , Invalid token: ", response.token)
             }
-            else if (response?.req == "connection") {
+            else if (response?.req == "connection_phone") {
                 ws.send(JSON.stringify(response))
+                if(WsConnection.screen){
+                    WsConnection.screen.send(JSON.stringify(response))
+                }
+
             }else if(response?.req == "bigCursor"){
                 WsConnection.screen.send(JSON.stringify(response))
             }
