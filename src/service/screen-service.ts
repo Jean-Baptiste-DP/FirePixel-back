@@ -23,19 +23,14 @@ export class ScreenService{
             for(let i=0; i<screen.height; i++){
                 screenEntity.grid[i] = new Array(screen.width + 1).join( 'f' ); // 'f' = 15 the white color
             }
-        
             this.repository.save(screenEntity);
             return screenEntity.id
         }else if(previouScreen.height!=screen.height || previouScreen.width!=screen.width){
-            let previousGrid = previouScreen.grid
-            previouScreen.grid = new Array(screen.height)
             for(let i=0; i<screen.height; i++){
-                if(i>=previouScreen.height){
+                if(i>=previouScreen.grid.length){
                     previouScreen.grid[i] = new Array(screen.width + 1).join( 'f' );
-                }else if(screen.width>previouScreen.width){
-                    previouScreen.grid[i] = previousGrid[i] + new Array(screen.width - previouScreen.width + 1).join('f');
-                }else{
-                    previouScreen.grid[i] = previousGrid[i].substring(0, screen.width)
+                }else if(screen.width>previouScreen.grid[i].length){
+                    previouScreen.grid[i] = previouScreen.grid[i] + new Array(screen.width - previouScreen.width + 1).join('f');
                 }
             }
             previouScreen.height = screen.height;
