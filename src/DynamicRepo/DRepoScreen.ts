@@ -33,7 +33,6 @@ export class DRepoScreen {
     }
 
     async saveInDB(): Promise<void> {
-        console.log(this.screenEntity);
         if (this.screenEntity.id >= 0) {
             console.log("Save screen");
             this.screenRepository.save(this.screenEntity);
